@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <span v-html="getMessage()"></span>
+            <p>Lucky number is {{ luckyNumber }}</p>
+            <p v-once>Render Once Lucky number is {{ luckyNumber }}</p>
+            <a v-bind:href="blogUrl">Visit Blog</a>
+            <p>Lucky Number is an {{ luckyNumber%2==0?"even number" : "odd number"}}</p>
+            <p>{{ updateLuckyNumber() }}</p>
+            <p>{{ employee.name }} is {{ employee.age }} years old</p>
+            <p>His salary is {{ employee.salary }}</p>
+        </div>
+    </body>
+    <script>
+        const { createApp, ref, reactive } = Vue;
+
+        createApp({
+            setup(){
+                const message = "Hello Vue!";
+
+                let luckyNumber = ref (6);
+
+                const blogUrl = "https://github.com/StarPlatTheWorld";
+
+                const employee = reactive({
+                    name: "Ethan",
+                    age: 25,
+                    salary: 25000
+                })
+
+                function getMessage(){
+                    return `<h1><u>${message}<u></h1>`;
+                }
+
+                function updateLuckyNumber(){
+                    setTimeout(() => {
+                        luckyNumber.value = 77;
+                        employee.salary = 35000;
+                    }, 2000);
+                }
+
+                return {
+                    getMessage, 
+                    luckyNumber,
+                    employee,
+                    updateLuckyNumber,
+                    blogUrl,
+                }
+            }
+        }).mount('#app')
+    </script>
+</html>
