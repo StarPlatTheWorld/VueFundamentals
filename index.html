@@ -8,72 +8,84 @@
     </head>
     <body>
         <div id="app">
-            <h1>{{ message }}</h1>
-            Lucky Numbers :
-            <span v-for="(luckyNumber, index) in luckyNumbers"> <br />{{ luckyNumber }}</span>
-            <!-- <p>Lucky number is {{ luckyNumber }}</p> -->
-            <hr/>
-            <p>Projects in Pipeline</p>
-            <ul>
-                <li v-for="(project, index) in employee.projects" :key= "project.project">
-                    <span>{{ index + 1 }} - "{{ project.project }} - timeline is: {{ project.timeline }}"</span>
-                    <input type="text" />
-                </li>
-            </ul>
-            <hr />
-            {{ shuffleEmployeeProjects() }}
-            <ul>
-                <li v-for="(value, key) in employee">
-                    <span>{{ key }} : {{ value }}</span>
-                </li>
-            </ul>
-            <p>{{ employee.name }} is {{ employee.age }} years old</p>
-            <p>His salary is {{ employee.salary }}</p>
-
-            <!-- <p v-show="employee.hasCorporateCard">Spending limit for card (v-show directive) : {{ employee.spendingLimit }}</p> -->
-            <!-- <p v-if="employee.hasCorporateCard">Spending limit for card (v-if directive) : {{ employee.spendingLimit }}</p>
-            <p v-else-if="employee.salary>25000 && employee.yearsWithCompany>1">Employee is eligible for a corporate card.</p>
-            <p v-else>Employy is not eligible for a corporate card.</p> -->
+            <!-- v-binding custom CSS styling to a div -->
+            <div v-bind:style="{backgroundColor: 'aqua', fontSize: fontSizeTemp + 'px'}">
+                Hello World    
+            </div>
+            <br/>
+            <!-- v-binding custom dynamic classes whilst also using standard HTML attributes -->
+            <span class="padding-medium" v-bind:class="{h1: isMainTitle(), 'bg-green': hasGreenBackground()}">Random</span>
+            <br/><br/>
+            <!-- v-binding custom classes within an Array -->
+            <span class="padding-medium" v-bind:class="[isMainTitle()? mainTitle: '', borderClass]">Random</span>
+            <br/><br/>
+            <!-- v-binding custom object styles -->
+            <span v-bind:style="someStyle.style1">Random Style Binding</span>
+            <!-- v-bind can be replaced with just : as a shorthand -->
         </div>
     </body>
     <script>
         const { createApp, ref, reactive } = Vue;
-
+        const fontSizeTemp = 60;
         createApp({
             setup(){
-                const message = ref("Hello Vue!");
+                const mainTitle = {
+                    h1: true,
+                    "bg-grey": true,
+                };
 
-                let luckyNumbers = [3, 7, 9, 12, 19];
+                const borderClass = {
+                    border: true,
+                }
 
-                const blogUrl = "https://github.com/StarPlatTheWorld";
+                const someStyle = {
+                    style1: {
+                        fontSize: "40px",
+                        backgroundColor: "lightgreen",
+                        margin: "20px",
+                        border: "1px solid black"
+                    }
+                };
 
-                const employee = reactive({
-                    name: "Ethan",
-                    age: 25,
-                    salary: 25000,
-                    hasCorporateCard: true,
-                    spendingLimit: 10000,
-                    yearsWithCompany: 3,
-                    projects: [
-                        { project: "Blue A", timeline: "2 years"},
-                        { project: "Green B", timeline: "6 months"},
-                        { project: "Red C", timeline: "1 year"},
-                    ],
-                });
+                function isMainTitle() {
+                    return true;
+                };
 
-                function shuffleEmployeeProjects(){
-                    setTimeout(() => {
-                        employee.projects.sort(() => Math.random()-0.5);
-                    }, 3000);
+                function hasGreenBackground() {
+                    return true;
                 };
 
                 return {
-                    message, 
-                    luckyNumbers,
-                    employee,
-                    shuffleEmployeeProjects,
+                    fontSizeTemp,
+                    isMainTitle,
+                    hasGreenBackground,
+                    mainTitle,
+                    someStyle,
+                    borderClass,
                 };
             },
         }).mount('#app')
     </script>
+    <style>
+        .h1 {
+            font-size: 60px;
+            color: green;
+        }
+        .h2 {
+            font-size: 40px;
+            color: chocolate;
+        }
+        .bg-grey {
+            background-color: grey;
+        }
+        .bg-green {
+            background-color: lightgreen;
+        }
+        .padding-medium {
+            padding: 20px;
+        }
+        .border {
+            border: 4px solid red;
+        }
+    </style>
 </html>
