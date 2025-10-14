@@ -8,14 +8,32 @@
     </head>
     <body>
         <div id="app">
-            <span v-html="getMessage()"></span>
-            <p>Lucky number is {{ luckyNumber }}</p>
-            <p v-once>Render Once Lucky number is {{ luckyNumber }}</p>
-            <a v-bind:href="blogUrl">Visit Blog</a>
-            <p>Lucky Number is an {{ luckyNumber%2==0?"even number" : "odd number"}}</p>
-            <p>{{ updateLuckyNumber() }}</p>
+            <h1>{{ message }}</h1>
+            Lucky Numbers :
+            <span v-for="(luckyNumber, index) in luckyNumbers"> <br />{{ luckyNumber }}</span>
+            <!-- <p>Lucky number is {{ luckyNumber }}</p> -->
+            <hr/>
+            <p>Projects in Pipeline</p>
+            <ul>
+                <li v-for="(project, index) in employee.projects" :key= "project.project">
+                    <span>{{ index + 1 }} - "{{ project.project }} - timeline is: {{ project.timeline }}"</span>
+                    <input type="text" />
+                </li>
+            </ul>
+            <hr />
+            {{ shuffleEmployeeProjects() }}
+            <ul>
+                <li v-for="(value, key) in employee">
+                    <span>{{ key }} : {{ value }}</span>
+                </li>
+            </ul>
             <p>{{ employee.name }} is {{ employee.age }} years old</p>
             <p>His salary is {{ employee.salary }}</p>
+
+            <!-- <p v-show="employee.hasCorporateCard">Spending limit for card (v-show directive) : {{ employee.spendingLimit }}</p> -->
+            <!-- <p v-if="employee.hasCorporateCard">Spending limit for card (v-if directive) : {{ employee.spendingLimit }}</p>
+            <p v-else-if="employee.salary>25000 && employee.yearsWithCompany>1">Employee is eligible for a corporate card.</p>
+            <p v-else>Employy is not eligible for a corporate card.</p> -->
         </div>
     </body>
     <script>
@@ -23,37 +41,39 @@
 
         createApp({
             setup(){
-                const message = "Hello Vue!";
+                const message = ref("Hello Vue!");
 
-                let luckyNumber = ref (6);
+                let luckyNumbers = [3, 7, 9, 12, 19];
 
                 const blogUrl = "https://github.com/StarPlatTheWorld";
 
                 const employee = reactive({
                     name: "Ethan",
                     age: 25,
-                    salary: 25000
-                })
+                    salary: 25000,
+                    hasCorporateCard: true,
+                    spendingLimit: 10000,
+                    yearsWithCompany: 3,
+                    projects: [
+                        { project: "Blue A", timeline: "2 years"},
+                        { project: "Green B", timeline: "6 months"},
+                        { project: "Red C", timeline: "1 year"},
+                    ],
+                });
 
-                function getMessage(){
-                    return `<h1><u>${message}<u></h1>`;
-                }
-
-                function updateLuckyNumber(){
+                function shuffleEmployeeProjects(){
                     setTimeout(() => {
-                        luckyNumber.value = 77;
-                        employee.salary = 35000;
-                    }, 2000);
-                }
+                        employee.projects.sort(() => Math.random()-0.5);
+                    }, 3000);
+                };
 
                 return {
-                    getMessage, 
-                    luckyNumber,
+                    message, 
+                    luckyNumbers,
                     employee,
-                    updateLuckyNumber,
-                    blogUrl,
-                }
-            }
+                    shuffleEmployeeProjects,
+                };
+            },
         }).mount('#app')
     </script>
 </html>
