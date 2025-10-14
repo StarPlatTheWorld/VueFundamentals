@@ -1,91 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    </head>
-    <body>
-        <div id="app">
-            <!-- v-binding custom CSS styling to a div -->
-            <div v-bind:style="{backgroundColor: 'aqua', fontSize: fontSizeTemp + 'px'}">
-                Hello World    
-            </div>
-            <br/>
-            <!-- v-binding custom dynamic classes whilst also using standard HTML attributes -->
-            <span class="padding-medium" v-bind:class="{h1: isMainTitle(), 'bg-green': hasGreenBackground()}">Random</span>
-            <br/><br/>
-            <!-- v-binding custom classes within an Array -->
-            <span class="padding-medium" v-bind:class="[isMainTitle()? mainTitle: '', borderClass]">Random</span>
-            <br/><br/>
-            <!-- v-binding custom object styles -->
-            <span v-bind:style="someStyle.style1">Random Style Binding</span>
-            <!-- v-bind can be replaced with just : as a shorthand -->
-        </div>
-    </body>
-    <script>
-        const { createApp, ref, reactive } = Vue;
-        const fontSizeTemp = 60;
-        createApp({
-            setup(){
-                const mainTitle = {
-                    h1: true,
-                    "bg-grey": true,
-                };
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- The v-on directive can be shortened to @ symbol -->
+      <!-- v-on directive using a Key modifier to capture when the Enter key is pressed -->
+      <input type="text" v-on:keyup.enter="pressEnterKey" />
+      <!-- v-on directive using .prevent modifier to prevent the original purpose of the tag -->
+      <a
+        href="https://www.google.com"
+        v-on:click.prevent="buttonClick('Vue is exciting! - Link', $event)"
+        >Google</a
+      >
+      <div v-on:click="buttonClick('Vue is exciting! - Div', $event)">
+        Something exciting
+        <!-- v-on directive using the onClick event, stopping the parent alert by utilisng .stop modifier -->
+        <button
+          v-on:click.stop="buttonClick('Vue is exciting! - Button', $event)"
+        >
+          Click me
+        </button>
+      </div>
+      <p>x: {{ x }} y: {{ y }}</p>
+    </div>
+  </body>
+  <script>
+    const { createApp, ref, reactive } = Vue;
 
-                const borderClass = {
-                    border: true,
-                }
+    createApp({
+      setup() {
+        let x = ref(0);
+        let y = ref(0);
 
-                const someStyle = {
-                    style1: {
-                        fontSize: "40px",
-                        backgroundColor: "lightgreen",
-                        margin: "20px",
-                        border: "1px solid black"
-                    }
-                };
+        function buttonClick(newMessage, event) {
+          x.value = event.x;
+          y.value = event.y;
+          alert(newMessage);
+        }
 
-                function isMainTitle() {
-                    return true;
-                };
+        function pressEnterKey() {
+          alert("Enter key pressed");
+        }
 
-                function hasGreenBackground() {
-                    return true;
-                };
-
-                return {
-                    fontSizeTemp,
-                    isMainTitle,
-                    hasGreenBackground,
-                    mainTitle,
-                    someStyle,
-                    borderClass,
-                };
-            },
-        }).mount('#app')
-    </script>
-    <style>
-        .h1 {
-            font-size: 60px;
-            color: green;
-        }
-        .h2 {
-            font-size: 40px;
-            color: chocolate;
-        }
-        .bg-grey {
-            background-color: grey;
-        }
-        .bg-green {
-            background-color: lightgreen;
-        }
-        .padding-medium {
-            padding: 20px;
-        }
-        .border {
-            border: 4px solid red;
-        }
-    </style>
+        return {
+          buttonClick,
+          x,
+          y,
+          pressEnterKey,
+        };
+      },
+    }).mount("#app");
+  </script>
 </html>
