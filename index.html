@@ -13,26 +13,39 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
   <body>
-    <div id="app">
-      <div>Learn Vue</div>
-      Name:
-      <!-- Data-binding variables utilising v-model directive. -->
-      <!-- Utilising .trim modifier to automatically trim whitespace from the input field. -->
-      <input type="text" v-model.trim="name" />
-      <br /><br />
-      Age:
-      <!-- Utilising .lazy modifier to sync data after change events rather than input events -->
-      <!-- .number is another modifier that can be applied so that numbers are not passed as strings. -->
-      <input type="number" v-model.lazy="age" />
-      <p>{{ name }} is {{ age }} years old.</p>
-      <br /><br />
-      <p>{{ counter }}</p>
-      <p>{{ getFullName }}</p>
-      <button v-on:click="counter++">Increment</button>
-      <button v-on:click="counter--">Decrement</button>
-      <br /><br />
-      First Name:
-      <input type="text" v-model="firstName" />
+    <!-- Utilising Bootstrap 5 styling to create a basic movie list page with buttons to add and remove movies along with vue directives. -->
+    <div id="app" class="container">
+      <div class="bg-info p-5 rounded m-5">
+        <div class="h2 text-center">Learn Vue - Movieplex</div>
+        <hr />
+        <div class="input-group mb-3">
+          <span class="input-group-text">Title</span>
+          <input type="text" class="form-control" v-model="newMovie.title" />
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Year</span>
+          <input type="text" class="form-control" v-model="newMovie.year" />
+        </div>
+        <div class="text-center pb-3">
+          <button class="btn btn-secondary m-2 w-25" v-on:click="addMovie">
+            Add Movie
+          </button>
+          <button class="btn btn-danger m-2 w-25" v-on:click="removeMovie">
+            Remove Movie
+          </button>
+        </div>
+        <div class="border p-3 w-50 mx-auto">
+          <div class="text-center">
+            <h4 class="text-center">Movie List</h4>
+            <hr />
+          </div>
+          <ul class="list-group">
+            <li v-for="movie in movies" class="list-group-item">
+              {{ movie.title }} - {{ movie.year }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </body>
   <script>
@@ -40,39 +53,36 @@
 
     createApp({
       setup() {
-        let name = ref("Ben");
-        let age = ref(25);
+        // A reactive array of movies
+        let movies = reactive([
+          { title: "Howl's Moving Castle", year: 2004 },
+          { title: "Kiki's Delivery Service", year: 1989 },
+          { title: "Spirited Away", year: 2001 },
+        ]);
 
-        let counter = ref(0);
-        let firstName = ref("Ethan");
-        let lastName = ref("McFarlane");
+        let newMovie = reactive({ title: "", year: "" });
 
-        // Watchers the value of the counter and is an async method. Watchers are for reactive sources, such as ref (including computed refs), a reactive object, a getter function, or an array of multiple sources. If wanting to use a reactive object, use a getter method (arrow function).
-        watch(
-          () => counter.value,
-          (newValue, oldValue) => {
-            console.log("Counter value changed from", oldValue, "to", newValue);
-            if (newValue == 5) {
-              alert("Counter value is 5");
-            }
+        // Function to add a new movie to the list if there are less than 5 existing movies, else alert the browser. Utilises JavaScript push method to add the new movie to the array until reload.
+        function addMovie() {
+          if (movies.length < 5) {
+            movies.push({ ...newMovie });
+            newMovie.title = "";
+            newMovie.year = "";
+          } else {
+            alert("Five movies already exist");
           }
-        );
+        }
 
-        // Set getFullName to a computed property arrow function rather than standard function as each time a ref is updated, the model gets re-rendered. Computed property values are cached. Computed properties are sync and not async.
-        const getFullName = computed((previous) => {
-          console.log("previous value", previous);
-          if (previous == "Ethan 1 McFarlane") {
-            console.log("Ethan McFarlane -> Special case");
-          }
-          return firstName.value + " " + lastName.value;
-        });
+        // Function to remove the latest movie using JavaScripts pop method.
+        function removeMovie() {
+          movies.pop();
+        }
 
         return {
-          name,
-          age,
-          counter,
-          getFullName,
-          firstName,
+          movies,
+          newMovie,
+          addMovie,
+          removeMovie,
         };
       },
     }).mount("#app");
